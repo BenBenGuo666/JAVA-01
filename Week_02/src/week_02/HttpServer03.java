@@ -1,30 +1,29 @@
-package Week_02;
+package week_02;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * @Desc 多线程 Socket 程序
+ * @Desc 多线程 Socket 程序，线程池式
  * @Date 2021/3/8
  */
-public class HttpServer02 {
+public class HttpServer03 {
 
     public static void main(String[] args) throws IOException {
-
-        ServerSocket serverSocket = new ServerSocket(8802);
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);
+        ServerSocket serverSocket = new ServerSocket(8803);
         while (true) {
             try {
                 final Socket socket = serverSocket.accept();
-                new Thread(() -> {
-                    service(socket);
-                }).start();
+                executorService.execute(() -> service(socket));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
 
     }
 
@@ -36,7 +35,7 @@ public class HttpServer02 {
             printWriter.println("HTTP/1.1 200 OK");
             printWriter.println("Content-Type:text/html;charset=utf-8");
             printWriter.println();
-            String body = "hello,nio2";
+            String body = "hello,nio3";
             printWriter.println("Content-Length:" + body.getBytes().length);
             printWriter.println();
             printWriter.write(body);
